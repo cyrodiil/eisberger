@@ -31,6 +31,8 @@
       sequenceMode: Drupal.settings.backgroundslider.settings.sequence,
       slideDirection: Drupal.settings.backgroundslider.settings.direction,
       startElementIndex: Drupal.settings.backgroundslider.settings.start,
+      buttonPrev: '#bgstrecherPrev',
+      buttonNext: '#bgstretcherNext',
       anchoring: 'left center',
       anchoringImg: 'left center',
       callbackfunction: callback
