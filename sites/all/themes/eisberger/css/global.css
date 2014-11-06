@@ -486,3 +486,8 @@ input[type="button"] {
 .bgStretcherNav {
   font-size: 32px;  
 }
+
+.nav-button-container {
+  position: absolute;
+  line-height: 1;
+}
