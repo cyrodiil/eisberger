@@ -1,0 +1,428 @@
+<?php
+/**
+ * @file
+ * Provides a custom entity 'Background'
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function backgroundslider_entity_info() {
+  $info = array();
+  $info['backgroundslider'] = array(
+    'label' => t('Background'),
+    'base table' => 'backgroundslider',
+    'entity keys' => array(
+      'id' => 'bid',
+      'label' => 'filename',
+    ),
+    'uri callback' => 'entity_class_uri',
+    'entity class' => 'Entity',
+    'controller class' => 'BackgroundSliderEntityController',
+    'admin ui' => array(
+      'path' => 'admin/appearance/background',
+      'controller class' => 'BackgroundSliderEntityUIController',
+      'menu wildcard' => '%backgroundslider_background',
+      'file' => 'backgroundslider.admin.inc',
+    ),
+    'module' => 'backgroundslider',
+    'access callback' => 'backgroundslider_access',
+    'bundles' => array(
+      'background' => array(
+        'label' => t('Background'),
+        'admin' => array(
+          'path' => 'admin/appearance/background',
+          'access arguments' => array('administer backgrounds'),
+        ),
+      ),
+    ),
+    'views controller class' => 'EntityDefaultViewsController',
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function backgroundslider_menu() {
+  $items = array();
+  $items['admin/config/user-interface/backgroundslider'] = array(
+    'title' => 'Background Slider',
+    'description' => 'Configure the Background Slider.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('backgroundslider_admin'),
+    'file' => 'backgroundslider.admin.inc',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function backgroundslider_menu_alter(&$items) {
+  // If it's not local task, it will not appear as tab on the appearance screen.
+  $items['admin/appearance/background']['type'] = MENU_LOCAL_TASK;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function backgroundslider_permission() {
+  return array(
+    'administer backgrounds' => array(
+      'title' => t('Administer backgrounds'),
+    ),
+  );
+}
+
+/**
+ * Check access permissions for background entities.
+ */
+function backgroundslider_access($op, $background = NULL, $account = NULL) {
+  return user_access('administer backgrounds', $account);
+}
+
+/**
+ * Menu autoloader for /background.
+ */
+function backgroundslider_background_load($id) {
+  $background = entity_load('backgroundslider', array($id));
+  return array_pop($background);
+}
+
+/**
+ * Implements hook_init().
+ */
+function backgroundslider_init() {
+
+  // Check if bgstretcher library exists.
+  $path = libraries_get_path('bgstretcher');
+  $installed = file_exists($path . '/bgstretcher.js') && file_exists($path . '/bgstretcher.css');
+
+  // On admin pages, the backgroundslider is not loaded.
+  if (!path_is_admin(current_path()) && $installed) {
+
+    // Get backgrounds from cache, if available.
+    if ($cache = cache_get('backgroundslider')) {
+      $backgrounds = $cache->data;
+    }
+    else {
+      $backgrounds = backgroundslider_get_backgrounds();
+    }
+
+    $page_backgrounds = array();
+
+    foreach ($backgrounds as $background) {
+      // Match path if necessary.
+      if ($background['pages']) {
+        // Convert path to lowercase. This allows comparison of the same path.
+        // with different case. Ex: /Page, /page, /PAGE.
+        $pages = drupal_strtolower($background['pages']);
+        // Convert the Drupal path to lowercase.
+        $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+        // Compare the lowercase internal and lowercase path alias (if any).
+        $page_match = drupal_match_path($path, $pages);
+        if ($path != $_GET['q']) {
+          $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
+        }
+        // When $background->visibility has a value of 0, the background is
+        // displayed on all pages except those listed in $background->pages.
+        // When set to 1, it is displayed only on those
+        // pages listed in $background->pages.
+        $page_match = !($background['visibility'] xor $page_match);
+      }
+      else {
+        $page_match = TRUE;
+      }
+
+      // If path matches, add background to array.
+      if ($page_match) {
+        $page_backgrounds[$background['weight']] = array(
+          'color' => $background['color'],
+          'elements' => $background['elements'],
+          'image' => $background['image'],
+        );
+      }
+    }
+
+    if (!empty($page_backgrounds)) {
+      // Add additional jQuery effects.
+      drupal_add_library('system', 'effects');
+      drupal_add_js('http://code.jquery.com/color/jquery.color-2.1.2.min.js', 'external');
+      // Add bgstrecher library.
+      $path = libraries_get_path('bgstretcher');
+      drupal_add_css($path . '/bgstretcher.css');
+      drupal_add_js($path . '/bgstretcher.js');
+      // Add backgroundslider JavaScript.
+      drupal_add_js(drupal_get_path('module', 'backgroundslider') . '/backgroundslider.js');
+
+      // If random is set, select a random start number.
+      if (variable_get('backgroundslider_random', 0)) {
+        $start = rand(0, count($page_backgrounds) - 1);
+      }
+      else {
+        $start = 0;
+      }
+
+      // Add settings.
+      $settings = array(
+        'delay' => intval(variable_get('backgroundslider_delay', 5000)),
+        'speed' => intval(variable_get('backgroundslider_speed', 400)),
+        'effect' => variable_get('backgroundslider_effect', 'fade'),
+        'sequence' => variable_get('backgroundslider_sequence', 'normal'),
+        'direction' => variable_get('backgroundslider_direction', 'N'),
+        'start' => $start,
+        'opacity' => floatval(variable_get('backgroundslider_opacity', 1)),
+        'width' => floatval(variable_get('backgroundslider_width', 1920)),
+        'height' => floatval(variable_get('backgroundslider_height', 1080)),
+      );
+      // Add array with backgrounds to Drupal.settings.
+      drupal_add_js(array('backgroundslider' => array('backgrounds' => $page_backgrounds, 'settings' => $settings)), 'setting');
+    }
+  }
+}
+
+/**
+ *  Function to get all backgrounds and save all backgrounds to the cache.
+ */
+function backgroundslider_get_backgrounds() {
+
+  // Get all the background entities.
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'backgroundslider');
+  $query->propertyCondition('status', 1);
+  $query->propertyOrderBy('weight');
+  $results = $query->execute();
+  $background_entities = entity_load('backgroundslider', array_keys($results['backgroundslider']));
+
+  $backgrounds = array();
+
+  foreach ($background_entities as $background) {
+    $backgrounds[$background->bid]['color'] = $background->color;
+    $backgrounds[$background->bid]['visibility'] = $background->visibility;
+    $backgrounds[$background->bid]['pages'] = $background->pages;
+    $backgrounds[$background->bid]['elements'] = $background->elements ? preg_split('/\r\n|[\r\n]/', $background->elements) : array();
+    $image = file_load($background->fid);
+    $backgrounds[$background->bid]['image'] = $image ? file_create_url($image->uri) : '';
+    $backgrounds[$background->bid]['weight'] = $background->weight;
+  }
+
+  // Save all the backgrounds to the cache.
+  cache_set('backgroundslider', $backgrounds, 'cache', CACHE_PERMANENT);
+  return $backgrounds;
+}
+
+/**
+ * Our custom controller for the background type.
+ *
+ * We're choosing to extend the controller provided by the entity module for
+ * full CRUD support for backgrounds.
+ *
+ * The EntityAPIController is found in
+ * sites/all/modules/contrib/entity/includes/entity.controller.inc
+ */
+class BackgroundSliderEntityController extends EntityAPIController {
+
+  /**
+   * Override delete method.
+   *
+   * Deletes file usage.
+   */
+  public function delete($ids, DatabaseTransaction $transaction = NULL) {
+
+    $entities = $ids ? $this->load($ids) : FALSE;
+    if (!$entities) {
+      // Do nothing, in case invalid or no ids have been passed.
+      return;
+    }
+    else {
+      foreach ($entities as $entity) {
+        $image = file_load($entity->fid);
+        if ($image) {
+          file_usage_delete($image, 'backgroundslider', 'backgroundslider', $entity->bid);
+        }
+      }
+      cache_clear_all('backgroundslider', 'cache');
+    }
+
+    return parent::delete($ids, $transaction);
+  }
+}
+
+/**
+ * Our custom controller for the admin ui.
+ *
+ * The EntityDefaultUIController can be found in
+ * sites/all/modules/contrib/entity/includes/entity.ui.inc
+ */
+class BackgroundSliderEntityUIController extends EntityDefaultUIController {
+
+  /**
+   * Override overviewForm method.
+   *
+   * Add submit button.
+   */
+  public function overviewForm($form, &$form_state) {
+
+    $form = parent::overviewForm($form, $form_state);
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save order'),
+    );
+
+    return $form;
+  }
+
+  /**
+   * Override overviewFormValidate method.
+   *
+   * Check if weight is numeric.
+   */
+  public function overviewFormValidate($form, &$form_state) {
+    foreach ($form_state['input']['background'] as $bid => $background) {
+      if (!ctype_digit($background['weight'])) {
+        form_set_error('background[weight][' . $bid . ']', t('Weight has to be an integer value.'));
+      }
+    }
+  }
+
+  /**
+   * Override overviewFormSubmit method.
+   *
+   * Save weight values for entities.
+   */
+  public function overviewFormSubmit($form, &$form_state) {
+    // Using $form_state['input'] instead of ['values'], because 'values' is
+    // empty. But this should be no problem, since the validate function
+    // checks if all values are digits.
+    $backgrounds = $form_state['input']['background'];
+    $weights = array();
+    foreach ($backgrounds as $k => $b) {
+      $weights[$k] = $b['weight'];
+    }
+    $entities = entity_load('backgroundslider', array_keys($weights));
+    $i = 0;
+    foreach ($entities as $entity) {
+      $entity->status = $backgrounds[$entity->bid]['status'] == 1 ? 1 : 0;
+      $entity->weight = $i++;
+      $entity->save();
+    }
+    cache_clear_all('backgroundslider', 'cache');
+  }
+
+  /**
+   * Override overviewTable method.
+   *
+   * Order table by weight.
+   */
+  public function overviewTable($conditions = array()) {
+
+    drupal_add_tabledrag('background-overview-table', 'order', 'sibling', 'background-weight');
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', $this->entityType);
+
+    // Add all conditions to query.
+    foreach ($conditions as $key => $value) {
+      $query->propertyCondition($key, $value);
+    }
+
+    if ($this->overviewPagerLimit) {
+      $query->pager($this->overviewPagerLimit);
+    }
+
+    $query->propertyOrderBy('weight');
+
+    $results = $query->execute();
+
+    $ids = isset($results[$this->entityType]) ? array_keys($results[$this->entityType]) : array();
+    $entities = $ids ? entity_load($this->entityType, $ids) : array();
+
+    $rows = array();
+    foreach ($entities as $entity) {
+      $rows[] = array(
+        'data' => $this->overviewTableRow($conditions, entity_id($this->entityType, $entity), $entity),
+        'class' => array('draggable'),
+      );
+    }
+
+    $render = array(
+      '#theme' => 'table',
+      '#header' => $this->overviewTableHeaders($conditions, $rows),
+      '#rows' => $rows,
+      '#empty' => t('No backgrounds found.'),
+      '#attributes' => array('id' => 'background-overview-table'),
+    );
+    return $render;
+  }
+
+  /**
+   * Override overviewTableHeaders method.
+   *
+   * Reorder columns and add additional columns.
+   */
+  protected function overviewTableHeaders($conditions, $rows, $additional_header = array()) {
+    $header = parent::overviewTableHeaders($conditions, $rows, $additional_header);
+
+    $header[0] = '';
+    $header[6] = $header[1];
+    $header[1] = t('Weight');
+    $header[2] = t('Image');
+    $header[3] = t('Filename');
+    $header[4] = t('Color');
+    $header[5] = t('Enabled');
+
+    ksort($header);
+
+    return $header;
+  }
+
+  /**
+   * Override overviewTableRow method.
+   *
+   * Reorder columns and add additional columns.
+   */
+  protected function overviewTableRow($conditions, $id, $entity, $additional_cols = array()) {
+
+    $row = parent::overviewTableRow($conditions, $id, $entity, $additional_cols);
+
+    $row[6] = $row[1];
+    $row[7] = $row[2];
+    $row[3] = $row[0];
+    $row[3]['data']['#url'] = FALSE;
+    $image = file_load($entity->fid);
+    $row[2] = $image ? theme_image(array('path' => $image->uri, 'height' => '50px')) : '';
+
+    $row[4] = '<div style="height: 40px; width: 40px; background-color: #' . $entity->color . ';">&nbsp;</div>';
+
+    $attributes = array('name' => 'background[' . $entity->bid . '][status]');
+    if ($entity->status == 1) {
+      $attributes['checked'] = 'checked';
+    }
+    $status = array(
+      '#type' => 'checkbox',
+      '#default_value' => $entity->status,
+      '#attributes' => $attributes,
+    );
+
+    $row[5] = drupal_render($status);
+
+    $weight = array(
+      '#type' => 'textfield',
+      '#value' => $entity->weight,
+      '#size' => 3,
+      '#maxlength' => 4,
+      '#attributes' => array('class' => array('background-weight'), 'name' => 'background[' . $entity->bid . '][weight]'),
+    );
+
+    $row[0] = '';
+    $row[1] = drupal_render($weight);
+
+    ksort($row);
+    return $row;
+  }
+}

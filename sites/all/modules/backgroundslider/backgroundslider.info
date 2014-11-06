@@ -1,0 +1,7 @@
+name = Background Slider
+description = Define backgrounds which slide through the page.
+core = 7.x
+configure = admin/config/user-interface/backgroundslider
+dependencies[] = image
+dependencies[] = entity
+dependencies[] = libraries

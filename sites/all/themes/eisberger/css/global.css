@@ -1,0 +1,481 @@
+/* This file will hold styles for the mobile version of your website (mobile first). */
+/* This also can include ANY global CSS that applies site-wide. Unless overwritten by a more specific style rule, CSS declarations in global.css will apply site-wide. */
+
+.page-node-done #region-content {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.page-node-done #region-content {
+  color: white;
+  padding: 10px;
+}
+
+#region-content a{
+  text-decoration: none;
+  color: #ffb010;
+}
+
+#zone-menu-wrapper {
+  display: none;
+}
+
+#zone-menu-wrapper .navigation,
+.block-menu,
+#block-nice-menus-1 {
+  background: black;
+  margin-bottom: 5px;
+}
+
+#zone-branding {
+  margin-bottom: 5px;
+  margin-top: 3em;
+}
+
+#zone-branding .region-inner {
+  background: black;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+#zone-branding .pull-left {
+  position: absolute;
+  width: 9999px;
+  height: 100%;
+  left: -9999px;
+  top: 0;
+  background: black;
+}
+
+#zone-branding-wrapper .logo-img{
+  float: right;
+}
+
+#region-branding-inner {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.polyroly-fourcol-3-9 .pane-hide-mobile {
+  display: none;
+}
+
+/* Main Menu */
+
+#nice-menu-1 li {
+  background: none;
+  border: none;
+  padding: 0 0.5em;
+}
+
+#nice-menu-1 li  {
+  background: none;
+  border: none;
+  padding: 0 0.5em;
+}
+
+#nice-menu-1 ul li {
+  width: 8em;
+}
+
+#nice-menu-1 ul {
+  border: none;
+  top: 24px;
+}
+
+#nice-menu-1 ul li ul {
+  top: 0px;
+}
+
+#nice-menu-1 > li > a {
+  padding-right: 15px;
+}
+
+ul.nice-menu-down li ul li ul {
+  left: 9em;
+}
+
+#main-menu a:link,
+#main-menu a:visited,
+#nice-menu-1 a:link,
+#nice-menu-1 a:visited,
+#region-content .polyroly-menu ul li a:link,
+#region-content .polyroly-menu ul li a:visited,
+.block-menu .menu a:link,
+.block-menu .menu a:visited {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+#main-menu a:active,
+#main-menu a:hover,
+#main-menu a.active,
+#nice-menu-1 a:active,
+#nice-menu-1 a:hover,
+#nice-menu-1 a.active,
+#region-content .polyroly-menu ul li a:active,
+#region-content .polyroly-menu ul li a:hover,
+#region-content .polyroly-menu ul li a.active,
+.block-menu .menu a:active,
+.block-menu .menu a:hover,
+.block-menu .menu a.active {
+  color: #B00000;
+  text-decoration: none;
+}
+
+/* Side menu */
+
+.polyroly-menu h2 {
+  font-family: Verdana,Helvetica,Arial,sans-serif;
+  font-size: 18px;
+  margin: 0;
+  font-weight: normal;
+  letter-spacing: normal;
+  color: #BBBBBB;
+}
+
+.polyroly-menu ul {
+  padding-left: 5px;
+}
+
+.polyroly-menu ul li {
+  list-style-image: none;
+  list-style-type: disc;
+  font-size: 16px;
+}
+
+.polyroly-menu ul li a {
+  font-size: 12px;
+}
+
+.block-menu .menu li {
+  list-style: none;
+  display: inline;
+}
+
+.panel-pane {
+  background: black;
+  color: white;
+  padding: 1em;
+}
+
+input[type="text"], input[type="email"] {
+  width: 350px;
+  max-width: 100%;
+}
+
+/*Responsive Video*/
+.video-wrapper {
+  width: 500px;
+  max-width: 100%;
+}
+
+.video-wrapper .video-iframe {
+  position: relative;
+}
+
+.video-wrapper .video-iframe .ratio {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.video-wrapper .video-iframe iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.logo-img {
+  margin-right: 7px;
+}
+
+#logo {
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile menu */
+
+#mmenu-open-link {
+  background: center center no-repeat transparent;
+  background-image: url( data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADhJREFUeNpi/P//PwOtARMDHQBdLGFBYtMq3BiHT3DRPU4YR4NrNAmPJuHRJDyahEeT8Ii3BCDAAF0WBj5Er5idAAAAAElFTkSuQmCC );
+  display: block;
+  width: 40px;
+  height: 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+}
+
+html.mm-basic nav.mm-basic {
+  background-color: #222222;
+  color: #FFFFFF;
+}
+
+html.mm-basic nav.mm-basic a {
+  text-decoration: none;
+}
+
+html.mm-basic nav.mm-basic .mm-list > li {
+  border-bottom: 1px solid #000000;
+  border-top: 1px solid #999999;
+}
+
+html.mm-basic nav.mm-basic > .mm-panel {
+  padding: 0;
+}
+
+.mm-list a.mm-subclose:before {
+  margin-bottom: -5px;
+  height: 8px;
+  width: 8px;
+}
+
+html.mm-basic nav.mm-basic a.mm-subclose:before {
+  border-left: 2px solid #B00000;
+  border-top: 2px solid #B00000;
+}
+
+html.mm-basic nav.mm-basic a.mm-subopen:after, html.mm-basic nav.mm-basic a.mm-fullsubopen:after, html.mm-basic nav.mm-basic a.mm-subclose:after {
+  border-color: #FFFFFF;
+}
+
+html.mm-basic nav.mm-basic em.mm-counter {
+  color: #FFFFFF;
+}
+
+.mm-menu .mm-list > li > a.mm-subclose {
+  color: #B00000;
+}
+
+.mmenu-list-icon:before {
+  color: #CCCCCC;
+  content: "";
+  padding-right: 0;
+}
+
+/* Flexslider */
+
+.flexslider {
+  margin-bottom: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+
+.flexslider .slides img {
+  height: auto;
+}
+
+.flexslider .flex-caption {
+  height: 90px;
+}
+
+.flexslider .flex-direction-nav a {
+  line-height: 40px;
+}
+
+.flexslider .flex-control-nav {
+  bottom: 5px;
+}
+
+.flexslider .flex-control-paging li a {
+  background: rgba(255, 176, 16, 0.3);
+
+}
+
+.flexslider .flex-control-paging li a.flex-active {
+  background: rgba(255, 176, 16, 1);
+}
+
+body.trailers .pane-content p {
+  margin-bottom: 0;
+}
+
+.panel-pane.slider {
+  padding: 0;
+}
+
+.panel-pane.slider .slider-body {
+  padding: 1em;
+}
+
+.views-field-field-intro-slider-txt {
+  padding: 0 50px;
+}
+
+/* Products view */
+
+.view-table table {
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0 14px;
+}
+
+.view-table thead th {
+  background-color: #000000;
+}
+
+.view-table thead th.active {
+  border-left-color: #FFB010;
+  border-right-color: #FFB010;
+}
+
+.view-table thead th a {
+  text-align: center;
+}
+
+.view-table tbody {
+  background-color: transparent;
+}
+
+.view-table tbody tr {
+  background-color: transparent;
+}
+
+.view-table tr:hover td {
+  background-color: #FFFFFF;
+}
+
+.view-table td {
+  padding: 0;
+}
+
+.view-table tbody td.active {
+  border-left-color: #FFB010;
+  border-right-color: #FFB010;
+}
+
+.view-table .views-field-body {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.view-table .view-table-text {
+  padding: 0 20px;
+}
+
+/* Responsive Table */
+
+.view-table .views-field {
+  display: none;
+}
+
+.view-table .views-field.show-mobile {
+  display: table-cell;
+}
+
+.show-mobile img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Expand button */
+
+.expand-text-button {
+  cursor: pointer;
+  color: #FFB010;
+  font-size: 12px;
+  font-weight: 100;
+}
+.expand-text-expanded {
+  margin-top: 12px;
+  display: none;
+}
+
+/* Lightbox */
+
+.lightbox .lightbox-trigger {
+  cursor: pointer;
+}
+
+.view-table .lightbox .lightbox-name {
+  display: none;
+}
+
+.view-table .lightbox .lightbox-images {
+  display: none;
+}
+
+#numberDisplay {
+  display: none;
+  color: #000000;
+  font-size: 1px;
+}
+
+/* Polyroly Menu */
+
+.polyroly-menu .polyroly-button {
+  display: inline;
+  margin-right: 5px;
+}
+
+.polyroly-menu .polyroly-button img {
+  background-color: #FFFFFF;
+}
+
+.polyroly-menu .polyroly-button img:hover {
+  background-color: #B00000;
+}
+
+.polyroly-menu .polyroly-button.active img {
+  background-color: #B00000;
+}
+
+/* Form */
+
+button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"] {
+  -webkit-appearance: none;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding;
+  background-clip: padding-box;
+  border-radius: 0px;
+  background: #000;
+  border: 1px solid;
+  border-color: #000;
+  cursor: pointer;
+  color: #ddd;
+  font: bold 12px/1.2 Arial, sans-serif;
+  outline: 0;
+  overflow: visible;
+  padding: 3px 10px 4px;
+  text-shadow: none;
+  width: auto;
+  *padding-top: 2px; /* IE7 */
+  *padding-bottom: 0px; /* IE7 */
+}
+
+.form-actions input:hover {
+  background: #000;
+  border-color: #B00000;
+  color: #B00000;
+}
+
+/* Responsive video */
+
+.embed-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16/9 ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.embed-container iframe,
+.embed-container object,
+.embed-container embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+

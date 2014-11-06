@@ -1,0 +1,27 @@
+/* This file will hold styles that are loaded using the same media query as the normal grid. */
+/* If you are using the default media queries provided by Omega, these styles will also
+ *  apply to the widescreen layout unless they are overridden by the widescreen styles. */
+
+/* Flexslider */
+
+.flexslider .flex-control-nav {
+  bottom: 0px;
+}
+
+/* Mobile menu */
+
+#mmenu-open-link {
+  display: none;
+}
+
+#zone-menu-wrapper {
+  display: block;
+}
+
+.polyroly-fourcol-3-9 .pane-hide-mobile {
+  display: block;
+}
+
+.container-12 .polyroly-fourcol-3-9 .pane-scale-mobile {
+  width: 700px;
+}

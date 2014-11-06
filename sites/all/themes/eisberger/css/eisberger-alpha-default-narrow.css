@@ -1,0 +1,29 @@
+/* This file will hold styles that are loaded using the same media query as the narrow grid. */
+/* If you are using the default media queries provided by Omega, these styles will also
+ *  apply to the normal and widescreen layouts. You may override these styles in the normal
+ *  and widescreen CSS files as appropriate. */
+
+.logo-img {
+  margin-right: 20px;
+}
+
+#logo {
+  width: 100%;
+  height: 100%;
+}
+
+/* Flexslider */
+
+.flexslider .flex-control-nav {
+  bottom: -10px;
+}
+
+/* Responsive Table */
+
+.view-table .views-field {
+  display: table-cell;
+}
+
+.container-12 .polyroly-fourcol-3-9 .pane-scale-mobile {
+  width: 97%;
+}

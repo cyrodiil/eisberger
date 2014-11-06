@@ -1,0 +1,7 @@
+/* This file will hold styles that are loaded using the same media query as the wide grid. */
+
+/* Flexslider */
+
+.flexslider .flex-control-nav {
+  bottom: 5px;
+}

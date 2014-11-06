@@ -1,0 +1,143 @@
+<?php
+/**
+ * @file
+ * Creates table background
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function backgroundslider_schema() {
+  $schema = array();
+  $schema['backgroundslider'] = array(
+    'description' => 'The base table for the Background entity',
+    'fields' => array(
+      'bid' => array(
+        'description' => 'Primary key of the Background entity',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'filename' => array(
+        'description' => 'Human readable filename of the background.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'fid' => array(
+        'description' => 'File ID of the background image.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'color' => array(
+        'description' => 'Hexadecimal RBG value of the color.',
+        'type' => 'varchar',
+        'length' => '6',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'elements' => array(
+        'description' => 'All elements which the color is applied to.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'visibility' => array(
+        'description' => 'Flag to indicate how to show backgrounds on pages. (0 = Show on all pages except listed pages, 1 = Show only on listed pages)',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'pages' => array(
+        'description' => 'Contents of the "Pages" block; contains a list of paths on which to include/exclude the background, depending on "visibility" setting.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'weight' => array(
+        'description' => 'Weight of the background is necessary for ordering.',
+        'type' => 'int',
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'status' => array(
+        'description' => 'Indicates, if this background appears in slider.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('bid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function backgroundslider_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break at install time.
+  $t = get_t();
+
+  // Check to see if the bgstretcher library is available.
+  if ($phase == 'runtime') {
+    $requirements['backgroundslider'] = array(
+      'title' => $t('Background Slider'),
+      'description' => $t('bgStretcher library has to be installed.'),
+      'value' => $t('2.0.1'),
+      'severity' => REQUIREMENT_OK,
+    );
+    _backgroundslider_requirements_library_installed($requirements);
+  }
+  return $requirements;
+}
+
+/**
+ * Check if the library is available.
+ *
+ * @param array $requirements
+ *   Requirements definition
+ */
+function _backgroundslider_requirements_library_installed(&$requirements) {
+  $t = get_t();
+
+  $path = libraries_get_path('bgstretcher');
+  $installed = file_exists($path . '/bgstretcher.js') && file_exists($path . '/bgstretcher.css');
+
+  // Check the results of the test.
+  if (!$installed) {
+    $requirements['backgroundslider']['description'] = $t('bgStretcher library not found. Please consult the README.txt for installation instructions.');
+    $requirements['backgroundslider']['severity'] = REQUIREMENT_ERROR;
+    $requirements['backgroundslider']['value'] = $t('bgStretcher library not found.');
+    return;
+  }
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function backgroundslider_uninstall() {
+  variable_del('backgroundslider_delay');
+  variable_del('backgroundslider_speed');
+  variable_del('backgroundslider_effect');
+  variable_del('backgroundslider_sequence');
+  variable_del('backgroundslider_direction');
+  variable_del('backgroundslider_opacity');
+  variable_del('backgroundslider_width');
+  variable_del('backgroundslider_height');
+}
+
+/**
+ * Adds field status to table backgroundslider.
+ */
+function backgroundslider_update_7100() {
+  db_add_field('backgroundslider', 'status', array(
+    'description' => 'Indicates, if this background appears in slider.',
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 1,
+    'initial' => 1
+  ));
+}
