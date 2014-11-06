@@ -491,3 +491,7 @@ input[type="button"] {
   position: absolute;
   line-height: 1;
 }
+
+#eisberger-logo {
+  width: 100%;
+}
