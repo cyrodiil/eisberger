@@ -481,6 +481,7 @@ input[type="button"] {
 .nav-inner-text {
   padding: 10px;
   margin: 0 42px;
+  text-align: center;
 }
 
 .bgStretcherNav {
@@ -490,7 +491,6 @@ input[type="button"] {
 .nav-button-container {
   position: absolute;
   line-height: 1;
-  text-align: center;
 }
 
 #eisberger-logo {
