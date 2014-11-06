@@ -478,3 +478,11 @@ input[type="button"] {
     height: 100%;
 }
 
+.nav-inner-text {
+  padding: 10px;
+  margin: 0 20px;
+}
+
+.bgStretcherNav {
+  font-size: 20px;  
+}
