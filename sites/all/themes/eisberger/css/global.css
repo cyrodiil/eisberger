@@ -503,6 +503,12 @@ input[type="button"] {
   float: right;
 }
 
+.eisberger-middleleft,
+.eisberger-middleleftcenter,
+.eisberger-middlerightcenter {
+  display: none;
+}
+
 .panel-panel p {
   margin-bottom: 0px;
 }

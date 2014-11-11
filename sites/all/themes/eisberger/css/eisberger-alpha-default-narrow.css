@@ -31,3 +31,9 @@
 .eisberger-middleright {
   width: 160px;
 }
+
+.eisberger-middleleft,
+.eisberger-middleleftcenter,
+.eisberger-middlerightcenter {
+  display: block;
+}
