@@ -500,6 +500,7 @@ input[type="button"] {
 
 .eisberger-middleright {
   width: 150px;
+  float: right;
 }
 
 .panel-panel p {
