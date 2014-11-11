@@ -495,7 +495,11 @@ input[type="button"] {
 }
 
 #eisberger-logo {
-  width: 160px;
+  width: 100%;
+}
+
+.eisberger-middleright {
+  width: 150px;
 }
 
 .panel-panel p {
